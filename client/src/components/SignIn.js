@@ -1,6 +1,10 @@
-import React from 'react';
-import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Link, Grid, Typography, makeStyles, Container, Box } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Avatar, Button, CssBaseline, FormControlLabel, Checkbox, Link, Grid, Typography, makeStyles, Container, Box } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
+import { FaGooglePlusG } from 'react-icons/fa';
+import { IconContext } from 'react-icons'
+import Input from './Input';
+
 
 function Copyright() {
   return (
@@ -17,7 +21,7 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(3),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -31,11 +35,16 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(2, 0, 0),
   },
 }));
 
 export default function SignIn() {
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleShowPassword = () => setShowPassword((prevState) => !prevState);
+
   const classes = useStyles();
 
   return (
@@ -49,41 +58,18 @@ export default function SignIn() {
           Login
         </Typography>
         <form className={classes.form}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
+          <Input label="Email Address" name="Email" type="email" />
+          <Input label="Password" handleShowPassword={handleShowPassword} type={showPassword ? 'text' : 'password'} name="password" />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign In
-          </Button>
+          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>Login</Button>
+          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+            <IconContext.Provider value={{ size: "2em" }}>
+              <FaGooglePlusG />
+            </IconContext.Provider>
+            Login with Google</Button>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
