@@ -1,0 +1,63 @@
+.NavBar{
+    position: absolute;
+    top:0px;
+    right: 0px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 60px;
+    max-height: 60px;
+    background:transparent;
+    background-color: #1976D2;
+    position: fixed;
+    z-index: 100;
+}
+.NavBar.active{
+    background-color: rosybrown;
+}
+.NavItems{
+    display: flex;
+    justify-content:flex-start;
+    align-items: center;
+    width: 50%;
+    box-sizing: border-box;
+    /* color: navy; */
+    color: white;
+    /* border: 5px solid black; */
+}
+.loginBtn, .loginBtn2{
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    margin-right:1%;
+    font-family: 'Itim', cursive;
+    font-size: 21px;
+}
+
+.Hamburger{
+    font-size: 40px;
+    display: flex;
+    align-items: center;
+    color: white;
+    /* margin-left: 5px; */
+}
+
+@media (max-width:768px) {
+    .NavBar{
+        height: 30px;
+    }
+    .NavItems{
+        display: none;
+    }
+    .loginBtn{
+        display: none;
+    }
+}
+@media (min-width:769px){
+    .Hamburger{
+        display: none;
+    }
+    .loginBtn2{
+        display: none;
+    }
+}
