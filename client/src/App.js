@@ -20,6 +20,7 @@ const App = () => {
                 <Route exact component={CreateMemory} path="/createMemories" />
             </BrowserRouter>
         </PostStore>
+
     )
 }
 

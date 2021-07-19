@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles ,AppBar , Tab , Tabs} from '@material-ui/core';
-import {VpnKey, AccountCircle} from '@material-ui/icons';
+import { makeStyles, AppBar, Tab, Tabs } from '@material-ui/core';
+import { VpnKey, AccountCircle } from '@material-ui/icons';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import SignUp from '../components/Signup';
-import SignIn from '../components/SignIn';
+import SignUp from '../components/register';
+import SignIn from '../components/login';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -58,19 +58,19 @@ export default function Auth() {
 
     return (
         <div className={classes.root}>
-                    <AppBar position="static" color="default">
-                        <Tabs
-                            value={value}
-                            onChange={handleChange}
-                            scrollButtons="on"
-                            indicatorColor="primary"
-                            textColor="primary"
-                            centered
-                        >
-                            <Tab label="Login " icon={<VpnKey />} {...a11yProps(0)} />
-                            <Tab label="Register " icon={<AccountCircle/>}  {...a11yProps(1)} />
-                        </Tabs>
-                    </AppBar>
+            <AppBar position="static" color="default">
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    scrollButtons="on"
+                    indicatorColor="primary"
+                    textColor="primary"
+                    centered
+                >
+                    <Tab label="Login " icon={<VpnKey />} {...a11yProps(0)} />
+                    <Tab label="Register " icon={<AccountCircle />}  {...a11yProps(1)} />
+                </Tabs>
+            </AppBar>
             <TabPanel value={value} index={0}>
                 <SignIn />
             </TabPanel>
@@ -79,5 +79,6 @@ export default function Auth() {
             </TabPanel>
 
         </div>
+
     );
 }

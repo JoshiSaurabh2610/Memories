@@ -25,7 +25,7 @@
     color: white;
     /* border: 5px solid black; */
 }
-.loginBtn, .loginBtn2{
+.loginBtn{
     display: flex;
     align-items: center;
     box-sizing: border-box;
@@ -40,6 +40,14 @@
     align-items: center;
     color: white;
     /* margin-left: 5px; */
+}
+
+.profile{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2px;
+    padding: 2px;
 }
 
 @media (max-width:768px) {

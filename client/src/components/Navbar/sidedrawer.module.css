@@ -29,3 +29,7 @@
     height: 60px;
     margin-left: 90%;
 }
+.btn{
+    width: 90%;
+    align-self: center;
+}

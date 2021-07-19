@@ -7,12 +7,14 @@ export const NavItemsData = [
         path: '/home',
         icon: <Home />,
         cNamme: 'nav-text',
+        auth: false
     },
     {
         title: 'Create Memories',
         path: '/createMemories',
         icon: <Create />,
         cNamme: 'nav-text',
+        auth: true
     },
 ];
 

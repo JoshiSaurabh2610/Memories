@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { Avatar, Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, makeStyles, Typography} from '@material-ui/core';
+import { Avatar, Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, makeStyles, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import { Favorite, Share, MoreVert, Delete } from '@material-ui/icons';
 import { red } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
+    card: {
         maxWidth: 345,
         marginBottom: 24,
-        marginRight:0,
+        marginRight: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        borderRadius: '15px',
+        height: '100%',
+        position: 'relative',
     },
     media: {
         height: 0,
@@ -27,42 +32,49 @@ const useStyles = makeStyles((theme) => ({
     avatar: {
         backgroundColor: red[500],
     },
+    overlay: {
+        position: 'absolute',
+        top: '20px',
+        left: '20px',
+        color: 'white',
+    },
 }));
 
-export default function RecipeReviewCard() {
+export default function RecipeReviewCard({postData}) {
     const classes = useStyles();
     const [expanded, setExpanded] = useState(false);
-
+    const user = localStorage.getItem('user');
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
     return (
-        <Card className={classes.root}>
-            <CardHeader
-                avatar={
-                    <Avatar aria-label="recipe" className={classes.avatar}>
-                        R
-                    </Avatar>
-                }
-                action={
-                    <IconButton aria-label="settings">
-                        <MoreVert />
-                    </IconButton>
-                }
-                title="Shrimp and Chorizo Paella"
-                subheader="September 14, 2016"
-            />
+        <Card className={classes.card}>
             <CardMedia
                 className={classes.media}
-                image="/static/images/cards/paella.jpg"
-                title="Paella dish"
+                image="/hello"
             />
+            <div className={classes.overlay}>
+                <CardHeader
+                    avatar={
+                        <Avatar aria-label="recipe" className={classes.avatar}>
+                            R
+                        </Avatar>
+                    }
+                    action={
+                        <IconButton aria-label="settings">
+                            <MoreVert />
+                        </IconButton>
+                    }
+                    title={postData?.title}
+                    subheader={postData?.createdAt}
+                />
+            </div>
+
             <CardContent>
-                <Typography >Title of Memory</Typography>
+                <Typography >{postData?.title}</Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                    This impressive paella is a perfect party dish and a fun meal to cook together with your
-                    guests. Add 1 cup of frozen peas along with the mussels, if you like.
+                    {postData?.msg}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
@@ -80,7 +92,7 @@ export default function RecipeReviewCard() {
                     aria-expanded={expanded}
                     aria-label="show more"
                 >
-                    <Delete />
+                { (postData?.creatorId === user?._id || postData?.creatorId === user?.googleId ) && <Delete />}
                 </IconButton>
             </CardActions>
         </Card>
