@@ -2,12 +2,12 @@
 import jwt from 'jsonwebtoken';
 // import User from '../models/User';
 import ErrorResponse from '../utils/errorResponse';
-export const Protect = async (req, res, next) => {
+export const auth = async (req, res, next) => {
     let token;
-    console.log(req.headers);
+    // console.log(req.headers);
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
         //Bearer <JWT>
-        console.log('trying to get token');
+        // console.log('trying to get token');
         token = req.headers.authorization.split(" ")[1]
     }
     if (!token) {
@@ -16,25 +16,24 @@ export const Protect = async (req, res, next) => {
     }
 
     // check whose token is this our's or google one
-    const isOurToken = token.length < 500 ; 
+    const isOurToken = token.length < 500;
 
     try {
         // decode token
-        console.log("decoding token => ", token);
+        // console.log("decoding token => ", token);
         let decode;
-        if(isOurToken){
+        if (isOurToken) {
             decode = jwt.verify(token, process.env.JWT_SECRET);
             // const user = await User.findById(decode.id);
             // if (!user) {
             //     // console.log('user is not exists');
             //     return next(new ErrorResponse("NO User Found with this ID ", 404));
             // }
-            req.userId = decode?.id; // used in other routes to do things
-        }else{
+            req.userId = decode.id; // used in other routes to do things
+        } else {
             // Google TOken
             decode = jwt.decode(token);
-            req.userId = decode?.sub;
-
+            req.userId = decode.sub;
         }
         next();
     } catch (err) {

@@ -2,12 +2,13 @@ import classes from "./Navbar.module.css";
 import Navitem from "./Navitem";
 import { NavItemsData } from './NavData';
 import Sidedrawer from "./Sidedrawer";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, Button } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import { useLocation, useHistory } from "react-router-dom";
+import decode from 'jwt-decode';
 const Navbar = () => {
-    console.log("Navbar Rendered");
+    // console.log("Navbar Rendered");
     const history = useHistory();
     const location = useLocation();
     const [sideDrawer, setSideDrawer] = useState(false);
@@ -18,7 +19,16 @@ const Navbar = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        console.log(user);
+        if(token){
+            const decodeToken = decode(token);
+            console.log(decodeToken);
+            if(decodeToken.exp*1000 < new Date().getTime()){
+                console.log('token not valid now');
+                localStorage.clear();
+                history.push('/auth');
+            }
+        }
+        // console.log(user);
         setUser(JSON.parse(localStorage.getItem("user")));
     }, [location])
 
@@ -35,7 +45,7 @@ const Navbar = () => {
     // if (Background) {
     //     attachedClasses = attachedClasses.concat(classes.active);
     // }
-    console.log(user);
+    // console.log(user);
     return (
         <>
             <Sidedrawer sideDrawer={sideDrawer} setSideDrawer={sideDrawerHandler} user={user ? true : false} />

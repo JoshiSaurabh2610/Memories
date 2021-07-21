@@ -5,78 +5,90 @@ import * as ActionTypes from './ActionTypes';
 import axios from 'axios';
 
 const PostStore = ({ children }) => {
-    
+
     /* single post should look like
     {
-        Creator: String,
         Message: String,
-        Tags: String,
         Title: String,
         createdAt: Date,
         img: String,
-        like: Number,
-        _id:"mongoose_id"
+        like: [Array who liked],
+        _id:"mongoose_id/google id"
     }
     */
+    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = user?.googleId ? user?.googleId : user?._id;
 
-    const [Posts, dispatch] = useReducer(reducer, []);
+    const [posts, dispatch] = useReducer(reducer, []);
     const [selectedPost, setselectedPost] = useState(null);
-    const [loading, setLoading ] = useState(false);
-    const [error, seterror ] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, seterror] = useState(false);
 
-    const url = "http://localhost:5000/api/posts";
+    const API = axios.create({ baseURL: 'http://localhost:5000/api/' });
+
+    API.interceptors.request.use((req) => {
+        if (localStorage.getItem('token')) {
+            req.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+        }
+
+        return req;
+    });
 
     const fetchPosts = () => {
         setLoading(true);
-        axios.get(url)
+        API.get('/posts')
             .then(res => {
                 let post = res.data;
                 dispatch({ type: ActionTypes.SET_POSTS, post })
                 setLoading(false);
             })
-            .catch(err=>{
+            .catch(err => {
                 console.log(err);
                 seterror(err.message);
                 setLoading(false);
             })
     }
 
-    const AddPost = (postToAdd) => {
-        console.log('now we are in Add post');
+    const addPost = (postData) => {
         setLoading(true);
         setselectedPost(0);
-        axios.post(url, postToAdd)
+        const post = {
+            ...postData,
+            name: user.name
+        }
+        API.post("/posts/", post)
             .then(res => {
-                // console.log(res.data);
+                console.log(res.data);
                 let post = res.data;
                 dispatch({ type: ActionTypes.ADD_POST, post })
                 setLoading(false);
-                clearselectedPost();
+                clearSelectedPost();
             })
-            .catch(err=>{
+            .catch(err => {
                 console.log(err);
                 seterror(err.message);
                 setLoading(false);
-                clearselectedPost();
+                clearSelectedPost();
             })
-        
+
     }
 
-    const clearselectedPost = () => {
+    const clearSelectedPost = () => {
         setselectedPost(null);
     }
 
-    const selectPost = (id) => {
+    const selectPostHandler = (id) => {
         // console.log(`selecting the post with id = ${id}`);
-        let PostToSelect = Posts.find(post => post._id === id);
+        let PostToSelect = posts.find(post => post._id === id);
         setselectedPost(PostToSelect);
     }
 
     const editPost = (NewPost) => {
         setLoading(true);
-        setselectedPost(0);
+        setselectedPost(null);
         const id = NewPost._id;
-        const UpdatedPosts = Posts.reduce((updatedPost, post) => {
+        console.log(id);
+        const UpdatedPosts = posts.reduce((updatedPost, post) => {
             if (post._id === id) {
                 return updatedPost.concat(NewPost);
             } else {
@@ -84,44 +96,50 @@ const PostStore = ({ children }) => {
             }
         }, [])
         dispatch({ type: ActionTypes.SET_POSTS, post: UpdatedPosts })
-        axios.patch(`${url}/${id}`,NewPost)
-            .then(res=>{
-                setLoading(false); 
-                // console.log(res.data);
-                    console.log(`post updated`);
-                    clearselectedPost();
+        API.patch(`/posts/${id}`, NewPost)
+            .then(res => {
+                setLoading(false);
+                console.log(res.data);
+                console.log(`post updated`);
+                clearSelectedPost();
             })
-            .catch( err=>{
+            .catch(err => {
                 setLoading(false);
                 seterror(err.message)
-                clearselectedPost();
+                clearSelectedPost();
             })
-        
+
     }
 
-    const likePost = (id) => {
+    const likePost = (postId) => {
+        console.log('inside like post');
         setLoading(true);
-        let PostToUpdate = null;
-        const UpdatedPosts = Posts.reduce((updatedPost, post) => {
-            if (post._id === id) {
-                PostToUpdate={
-                    ...post,
-                    like: post.like + 1,
-                };
-                return updatedPost.concat(PostToUpdate);
+        let likedPost = posts.find(ele => ele._id == postId);
+        console.log(`this post you liked is : ${likedPost}`);
+
+        const index = likedPost.likes.findIndex((id) => id === userId);
+
+        if (index === -1) {
+            likedPost.likes.push(userId);
+        } else {
+            likedPost.likes = likedPost.likes.filter((id) => id !== userId);
+        }
+
+        const UpdatedPosts = posts.reduce((updatedPost, post) => {
+            if (post._id === postId) {
+                return updatedPost.concat(likedPost);
             } else {
                 return updatedPost.concat(post);
             }
         }, [])
         dispatch({ type: ActionTypes.SET_POSTS, post: UpdatedPosts })
         // console.log(PostToUpdate);
-        axios.patch(`${url}/${id}`,PostToUpdate)
-            .then(res=>{
+        API.patch(`posts/${postId}`, likedPost)
+            .then(res => {
                 setLoading(false);
-                // console.log(res.data);
-                console.log(`post updated`);
+                console.log(res.data);
             })
-            .catch(err=>{
+            .catch(err => {
                 setLoading(false);
                 console.log(err);
                 seterror(err.message);
@@ -129,8 +147,7 @@ const PostStore = ({ children }) => {
     }
 
     const deletePost = (id) => {
-        let PostToUpdate = null;
-        const UpdatedPosts = Posts.reduce((updatedPost, post) => {
+        const UpdatedPosts = posts.reduce((updatedPost, post) => {
             if (post._id === id) {
                 return updatedPost;
             } else {
@@ -138,13 +155,12 @@ const PostStore = ({ children }) => {
             }
         }, [])
         dispatch({ type: ActionTypes.SET_POSTS, post: UpdatedPosts })
-        axios.delete(`${url}/${id}`,PostToUpdate)
-            .then(res=>{
+        API.delete(`posts/${id}`)
+            .then(res => {
                 setLoading(false);
-                // console.log(res.data);
-                // console.log(Posts);
+                console.log(res.data);
             })
-            .catch(err=>{
+            .catch(err => {
                 console.log(err);
                 seterror(err.message);
                 setLoading(false);
@@ -153,15 +169,15 @@ const PostStore = ({ children }) => {
 
     return (
         <PostContext.Provider value={{
-            Posts,
+            posts,
             fetchPosts,
-            AddPost,
+            addPost,
             editPost,
             likePost,
             deletePost,
             selectedPost,
-            selectPost,
-            clearselectedPost,
+            selectPostHandler,
+            clearSelectedPost,
             loading,
             error,
         }}>

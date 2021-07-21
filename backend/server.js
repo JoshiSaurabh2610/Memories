@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import authRouter from './routes/auth.js';
+import postRouter from './routes/posts.js';
 import cors from 'cors';
 
 dotenv.config();
@@ -16,7 +17,7 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopol
         console.log('mongoose Connected');
 
         app.use('/api/auth', authRouter);
-
+        app.use('/api/posts',postRouter);
         // app.use(ErrorHandler);
         app.listen(process.env.PORT, () => {
             console.log(`server running on Port ${process.env.PORT}`);

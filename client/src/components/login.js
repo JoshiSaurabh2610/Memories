@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0, 1),
   },
 }));
+
 const initForm = {
   email: '',
   password: '',

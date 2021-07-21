@@ -4,7 +4,7 @@ import NavBar from './components/Navbar/Navbar';
 import Home from './Pages/Home.js';
 import Auth from './Pages/Auth'
 import CreateMemory from './Pages/CreateMemory';
-import PostStore from './Global State/Posts/PostStore';
+import PostStore from './context/PostStore';
 const App = () => {
     return (
         <PostStore>
