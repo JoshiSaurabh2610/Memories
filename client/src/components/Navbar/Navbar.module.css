@@ -57,15 +57,9 @@
     .NavItems{
         display: none;
     }
-    .loginBtn{
-        display: none;
-    }
 }
 @media (min-width:769px){
     .Hamburger{
-        display: none;
-    }
-    .loginBtn2{
         display: none;
     }
 }
