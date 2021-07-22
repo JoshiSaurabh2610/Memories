@@ -5,6 +5,7 @@ import Home from './Pages/Home.js';
 import Auth from './Pages/Auth'
 import CreateMemory from './Pages/CreateMemory';
 import PostStore from './context/PostStore';
+import ProtectedRoute from './components/ProtectedRoute';
 const App = () => {
     return (
         <PostStore>
@@ -17,10 +18,9 @@ const App = () => {
                     <Route exact component={Home} path="/home" />
                 </Switch>
                 <Route exact component={Auth} path="/auth" />
-                <Route exact component={CreateMemory} path="/createMemories" />
+                <ProtectedRoute exact component={CreateMemory} path="/createMemories" />
             </BrowserRouter>
         </PostStore>
-
     )
 }
 
