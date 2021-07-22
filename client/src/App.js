@@ -7,6 +7,9 @@ import CreateMemory from './Pages/CreateMemory';
 import PostStore from './context/PostStore';
 import ProtectedRoute from './components/ProtectedRoute';
 import PageNotFound from './components/PageNotFound';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
+
 const App = () => {
     return (
         <PostStore>
@@ -20,7 +23,9 @@ const App = () => {
 
                     <Route exact component={Auth} path="/auth" />
                     <ProtectedRoute exact component={CreateMemory} path="/createMemories" />
-                    <Route component={PageNotFound}/>
+                    <Route exact component={ForgotPassword} path="/auth/forgotPassword" />
+                    <Route exact component={ResetPassword} path="/auth/resetPassword/:tokenid" />
+                    <Route component={PageNotFound} />
                 </Switch>
             </BrowserRouter>
         </PostStore>

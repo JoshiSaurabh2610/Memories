@@ -38,22 +38,18 @@ export const login = async (req, res, next) => {
 }
 
 export const forgotPassword = async (req, res, next) => {
-    // res.send("forgotPassword Route");
     const { email } = req.body;
-    // console.log(email);
+    console.log(email);
     try {
         const user = await User.findOne({ email });
-        // console.log(user);
         if (!user) {
-            // console.log("user not found");
-            return next(new ErrorResponse("Email Could not be sent", 404));
+            console.log("user not found");
+            res.status(401).json({ msg: "Provide Registered Email" })
+            // return next(new ErrorResponse("Email Could not be sent, provide registered email", 401));
         }
-
         const resetToken = user.getResetToken();
         await user.save();
-
-        const resetUrl = `http://localhost:3000/resetPassword/${resetToken}`;
-
+        const resetUrl = `http://localhost:3000/auth/resetPassword/${resetToken}`;
         const msg = `
             <h1>You have requested a password reset </h1>
             <p>Dear username,<br/>
@@ -71,7 +67,7 @@ export const forgotPassword = async (req, res, next) => {
                 subject: "Password Reset Request",
                 text: msg
             });
-            res.status(200).json({ sucess: true, data: "Email Send Sucessfully" })
+            res.status(200).json({ sucess: true, data: "Email Send Sucessfully, Check your mail" })
         } catch (err) {
             user.resetPasswordToken = undefined;
             user.resetPasswordExpire = undefined;
@@ -90,7 +86,12 @@ export const forgotPassword = async (req, res, next) => {
 export const resetPassword = async (req, res, next) => {
     console.log(req.params.resetToken);
     const resetPasswordToken = crypto.createHash("sha256").update(req.params.resetToken).digest('hex');
-    // console.log(resetPasswordToken);
+    console.log(resetPasswordToken);
+
+    if (req.body.password != req.body.confirmPassword) {
+        return next(new ErrorResponse("Password and Confirm Password are not same"));
+    }
+
     try {
         const user = await User.findOne({
             resetPasswordToken,
@@ -98,16 +99,18 @@ export const resetPassword = async (req, res, next) => {
         });
 
         if (!user) {
+            console.log('user not find');
             return next(new ErrorResponse("Invalid Reset Token", 400));
         }
-
+        console.log('user found');
+        console.log(req.body);
         user.password = req.body.password;
         user.resetPasswordToken = undefined;
         user.resetPasswordExpire = undefined;
         await user.save();
         res.status(200).json({
             sucess: true,
-            data: "password Reseted Succesfully"
+            data: "Password Reseted Succesfully"
         })
     } catch (err) {
         console.log(err);

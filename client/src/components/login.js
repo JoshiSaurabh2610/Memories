@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react';
-import { Avatar, Button, CssBaseline, FormControlLabel, Checkbox, Link, Grid, Typography, makeStyles, Container } from '@material-ui/core';
+import { Avatar, Button, CssBaseline, FormControlLabel, Checkbox, Grid, Typography, makeStyles, Container } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
 import { FaGooglePlusG } from 'react-icons/fa';
 import Input from './Input';
 import { GoogleLogin } from 'react-google-login';
 import axios from 'axios';
-import {useHistory} from 'react-router-dom';
+import {useHistory,Link} from 'react-router-dom';
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(3),
@@ -112,7 +113,7 @@ export default function SignIn() {
           />
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link to="/auth/forgotPassword">
                 Forgot password?
               </Link>
             </Grid>
