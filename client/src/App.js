@@ -6,6 +6,7 @@ import Auth from './Pages/Auth'
 import CreateMemory from './Pages/CreateMemory';
 import PostStore from './context/PostStore';
 import ProtectedRoute from './components/ProtectedRoute';
+import PageNotFound from './components/PageNotFound';
 const App = () => {
     return (
         <PostStore>
@@ -16,9 +17,11 @@ const App = () => {
                         <Redirect to="/home" />
                     </Route>
                     <Route exact component={Home} path="/home" />
+
+                    <Route exact component={Auth} path="/auth" />
+                    <ProtectedRoute exact component={CreateMemory} path="/createMemories" />
+                    <Route component={PageNotFound}/>
                 </Switch>
-                <Route exact component={Auth} path="/auth" />
-                <ProtectedRoute exact component={CreateMemory} path="/createMemories" />
             </BrowserRouter>
         </PostStore>
     )
